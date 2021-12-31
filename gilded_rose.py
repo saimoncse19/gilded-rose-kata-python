@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+from abc import ABC, abstractmethod
+
 
 class GildedRose(object):
 
@@ -36,7 +37,10 @@ class GildedRose(object):
                         item.quality = item.quality + 1
 
 
-class Item:
+class BaseItem(ABC):
+    MAX_QUALITY = 50
+    MIN_QUALITY = 0
+
     def __init__(self, name, sell_in, quality):
         self.name = name
         self.sell_in = sell_in
@@ -44,3 +48,44 @@ class Item:
 
     def __repr__(self):
         return f"{self.name}, {self.sell_in}, {self.quality}"
+
+    @abstractmethod
+    def update_quality(self):
+        pass
+
+
+class Item(BaseItem):
+    def update_quality(self):
+        pass
+
+
+class NormalItem(BaseItem):
+
+    def update_quality(self):
+        pass
+
+
+class AgedBrie(BaseItem):
+
+    def update_quality(self):
+        pass
+
+
+class Sulfuras(BaseItem):
+    MAX_QUALITY = 80
+    MIN_QUALITY = 80
+
+    def update_quality(self):
+        pass
+
+
+class BackstagePasses(BaseItem):
+
+    def update_quality(self):
+        pass
+
+
+class Conjured(BaseItem):
+
+    def update_quality(self):
+        pass
