@@ -61,14 +61,22 @@ class Item(BaseItem):
 
 class NormalItem(BaseItem):
 
-    def update_quality(self):
-        pass
+    def update_quality(self) -> None:
+        cls = self.__class__
+        if cls.MIN_QUALITY <= self.quality <= cls.MAX_QUALITY:
+            quality = self.quality - 1 if self.sell_in > 0 else self.quality - 2
+            self.quality = max(quality, cls.MIN_QUALITY)
+        self.sell_in -= 1
 
 
 class AgedBrie(BaseItem):
 
     def update_quality(self):
-        pass
+        cls = self.__class__
+        if cls.MIN_QUALITY <= self.quality <= cls.MAX_QUALITY:
+            quality = self.quality + 1 if self.sell_in > 0 else self.quality + 2
+            self.quality = min(cls.MAX_QUALITY, quality)
+        self.sell_in -= 1
 
 
 class Sulfuras(BaseItem):
@@ -82,10 +90,22 @@ class Sulfuras(BaseItem):
 class BackstagePasses(BaseItem):
 
     def update_quality(self):
-        pass
+        cls = self.__class__
+        if cls.MIN_QUALITY <= self.quality <= cls.MAX_QUALITY:
+            if self.sell_in <= 0:
+                self.quality = 0
+            else:
+                quality = self.quality + 3 if 0 <= self.sell_in <= 5 else \
+                    self.quality + 2 if 5 < self.sell_in <= 10 else self.quality + 1
+                self.quality = min(cls.MAX_QUALITY, quality)
+        self.sell_in -= 1
 
 
 class Conjured(BaseItem):
 
     def update_quality(self):
-        pass
+        cls = self.__class__
+        if cls.MIN_QUALITY <= self.quality <= cls.MAX_QUALITY:
+            quality = self.quality - 2 if self.sell_in > 0 else self.quality - 4
+            self.quality = max(quality, cls.MIN_QUALITY)
+        self.sell_in -= 1
