@@ -1,5 +1,5 @@
 import unittest
-from gilded_rose import Item, GildedRose
+from gilded_rose import GildedRose, NormalItem, Sulfuras, AgedBrie, BackstagePasses, Conjured
 
 
 class GildedRoseTest(unittest.TestCase):
@@ -10,7 +10,7 @@ class GildedRoseTest(unittest.TestCase):
             obj.update_quality()
 
     def test_normal_item(self) -> None:
-        item = Item("Mountain Dew", 20, 40)
+        item = NormalItem("Mountain Dew", 20, 40)
         gilded_rose = GildedRose([item])
         gilded_rose.update_quality()
         self.assertEqual("Mountain Dew", item.name)
@@ -28,7 +28,7 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(item.sell_in, -11)
 
     def test_aged_brie(self) -> None:
-        item = Item("Aged Brie", 20, 20)
+        item = AgedBrie("Aged Brie", 20, 20)
         gilded_rose = GildedRose([item])
         gilded_rose.update_quality()
         self.assertEqual("Aged Brie", item.name)
@@ -46,7 +46,7 @@ class GildedRoseTest(unittest.TestCase):
         self.assertEqual(item.sell_in, -11)
 
     def test_sulfuras(self) -> None:
-        item = Item("Sulfuras, Hand of Ragnaros", 20, 80)
+        item = Sulfuras("Sulfuras, Hand of Ragnaros", 20, 80)
         gilded_rose = GildedRose([item])
         gilded_rose.update_quality()
         self.assertEqual("Sulfuras, Hand of Ragnaros", item.name)
@@ -60,7 +60,7 @@ class GildedRoseTest(unittest.TestCase):
         self.assertNotEqual(item.sell_in, -1)  # it is not equal so passes
 
     def test_backstage_passes(self) -> None:
-        item = Item("Backstage passes to a TAFKAL80ETC concert", 20, 20)
+        item = BackstagePasses("Backstage passes to a TAFKAL80ETC concert", 20, 20)
         gilded_rose = GildedRose([item])
         gilded_rose.update_quality()
         self.assertEqual("Backstage passes to a TAFKAL80ETC concert", item.name)
@@ -94,6 +94,27 @@ class GildedRoseTest(unittest.TestCase):
         GildedRoseTest.bulk_updater(gilded_rose, 2)
         self.assertEqual(item.sell_in, -1)
         self.assertEqual(item.quality, 0)
+
+    def test_conjured(self) -> None:
+        item = Conjured("Conjured Mana Cake", 20, 50)
+        gilded_rose = GildedRose([item])
+        gilded_rose.update_quality()
+        self.assertEqual("Conjured Mana Cake", item.name)
+        self.assertEqual(item.sell_in, 19)
+        self.assertEqual(item.quality, 48)
+        GildedRoseTest.bulk_updater(gilded_rose, item.sell_in + 1)
+
+        # sell by date passed -- will decrease twice as fast as normal items (-4)
+        self.assertEqual(item.sell_in, -1)
+        self.assertEqual(item.quality, 6)
+
+        GildedRoseTest.bulk_updater(gilded_rose)
+        self.assertEqual(item.sell_in, -2)
+        self.assertEqual(item.quality, 2)
+
+        GildedRoseTest.bulk_updater(gilded_rose)
+        self.assertEqual(item.sell_in, -3)
+        self.assertEqual(item.quality, 0)   # never less than 0
 
 
 if __name__ == '__main__':
